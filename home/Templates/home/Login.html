@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePoll - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% load static %}
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-size: 100%;
+            filter: grayscale(100%);
+            z-index: -1;
+        }
+        .header {
+            top: 0;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            background: rgb(0, 0, 0);
+            color: white;
+            padding: 10px;
+            padding-right: 0px;
+            padding-left: 0px;
+            /*z-index: 1000;*/
+        }
+        .header img {
+            height: 50px;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 90vh;
+            width: 100%;
+        }
+        .form-wrapper {
+            background: white;
+            margin-top: 100px;
+            padding: 40px;
+            width: 30%;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+            position: relative;
+        }
+        .input-group input {
+            width: 90%;
+            padding: 10px;
+            padding-left: 35px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 65%;
+            transform: translateY(-50%);
+            color: gray;
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: black;
+            color: white;
+            border: none;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-btn:hover {
+            background-color: #333;
+        }
+        .signup-link {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .signup-link a {
+            color: blue;
+            text-decoration: none;
+        }
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body background="{% static '12.jpg' %}">
+    <div class="header">
+        <img src="{% static 'logo.png' %}" id="logo">
+    </div>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="right">
+                <h1>LOGIN</h1>
+                <p>Login with your credentials.</p>
+
+                <form method="POST" action="{% url 'login' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label for="email">Enter your email address</label>
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" name="email" id="email" placeholder="name@example.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password">Enter your password</label>
+                        <i class="fa fa-lock" ></i>
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                    </div>
+
+                    <button class="login-btn" type="submit">Login</button>
+                </form>
+
+                {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li class="{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+                <div id="REGISTER">Don't have an account? <a href="{% url 'registration' %}">REGISTER</a></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

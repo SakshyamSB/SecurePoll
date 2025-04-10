@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Successful</title>
+</head>
+<body>
+    <h1>Login Successful</h1>
+
+    <form action="{% url 'login' %}" method="POST">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+
+</body>
+</html>
