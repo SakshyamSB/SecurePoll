@@ -1,15 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Login Successful</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SecurePoll - Home</title>
+  {% load static %}
+  <style>
+    
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: url('12.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .header {
+      background: black;
+      padding: 4px 10px;
+      display: flex;
+      align-items: center;
+      height: 50px;
+    }
+
+    .header img {
+      height: 35px;
+    }
+
+    .logo-text {
+      font-size: 18px;
+      font-weight: bold;
+      color: white;
+      margin-left: 10px;
+    }
+
+    .logo-text .secure {
+      color: white;
+    }
+
+    .logo-text .poll {
+      color: gray;
+      margin-left: 4px;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: calc(100vh - 50px);
+    }
+
+    .card {
+      background: white;
+      padding: 10px 10px;
+      width: 450px;
+      text-align: center;
+      border-radius: 12px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .card img {
+      width: 70px;
+      height: 70px;
+      margin-bottom: 20px;
+    }
+
+    .card h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 40px;
+    }
+
+    .menu-button {
+      width: 260px;
+      height: 75px;
+      line-height: 75px;
+      background-color: #e0e0e0;
+      margin: 18px auto;
+      font-size: 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .menu-button:hover {
+      background-color: #d5d5d5;
+      transform: scale(1.02);
+    }
+    #Logout {
+    display: flex;
+    justify-content: flex-end;
+    margin: 10px;
+    }
+    #Logout button {    
+    padding: 10px 20px;
+    background-color: #000000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    #Logout button:hover {
+    background-color: #e04352;
+    }
+  </style>
 </head>
 <body>
-    <h1>Login Successful</h1>
+  <!-- Black header -->
+  <div class="header">
+    <img src="{% static 'logo.png' %}"  alt="SecurePoll Logo" />
+  </div>  
+  <div>
 
-    <form action="{% url 'login' %}" method="POST">
-        {% csrf_token %}
-        <button type="submit">Logout</button>
-    </form>
-
+  <form id="Logout" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
+      <button type="submit">Logout</button>
+  </form>
+  </div>
+  <!-- Main content -->
+  <div class="container">
+    <div class="card">
+      <img id="img" src="{% static 'National-Emblem-of-Nepal.jpg' %}"  alt="Nepal Emblem" />
+      <h1>Nepal Online E-voting</h1>
+      <div class="menu-button">Voter Polls</div>
+      <div class="menu-button">Election Results</div>
+      <div class="menu-button">My Information</div>
+    </div>
+  </div>
 </body>
 </html>
