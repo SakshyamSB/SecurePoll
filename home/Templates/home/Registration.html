@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecurePoll - Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+        }
+        .header {
+            z-index: 1; /* to avoid clipping */
+            top: 0;
+            width: 100%;
+            position: fixed;
+            display: flex;
+            background: rgb(0, 0, 0);
+            color: white;
+            padding: 10px;
+        }
+        .container {
+            height: 100vh;  /* Full height of the viewport */
+            display: flex;
+            justify-content: center;
+            align-items: center;  /* Center vertically and horizontally */
+            margin-top: 70px;  /* Offset the fixed header */
+        }
+        .form-wrapper {
+            padding-top: 40px;
+            display: flex;
+            background: white;
+            width: 100%;
+            max-width: 1800px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .left {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+            padding: 20px;
+        }
+        .left img {
+            width: 90%;
+            height: auto;
+        }
+        .right {
+            width: 50%;
+            padding-top: 10px;
+            background: white;
+            padding-left: 30px;
+            padding-right: 30px;
+        }
+        .right p {
+            margin: 0px;
+            top: -10px;
+            padding-left: 30px;
+            padding-bottom:30px;
+        }
+        h1 {
+            margin: 0px;
+            color: #000000;
+            text-align: left;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        .input-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 66%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            padding-left: 30px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 68%;
+            transform: translateY(-50%);
+            color: gray;
+        }
+        .register-btn {
+            width: 40%;
+            padding: 12px;
+            background-color: black;
+            color: white;
+            border: none;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin: 20px 0;  /* Margin for spacing */
+        }
+        .register-btn:hover {
+            background-color: #333;
+        }
+        #first_name, #last_name {
+            width: 30%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            padding-left: 30px;
+        }
+        #logo {
+            height: 50px;
+        }
+        .HeaderText {
+            padding-top: 5px;
+            font-size: 40px;
+        }
+        .header strong {
+            font-weight: bolder;
+        }
+        .HeaderText {
+            font-weight: 100;
+        }
+        #LOGIN {
+            padding-top: 10px;
+            padding-bottom: 30px;
+        }
+        #LOGIN a {
+            color: black;
+            text-decoration: none;
+        }
+        #LOGIN a:hover {
+            color: rgb(50, 50, 50);
+            text-decoration: underline;
+            text-decoration-color: #000000;
+        }
+
+        /* Password Strength Indicator */
+        .strength-meter {
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .weak { color: red; }
+        .medium { color: orange; }
+        .strong { color: green; }
+
+        /* Popup styles */
+        .popup {
+            position: fixed;
+            width: 35%;
+            top: 15%;
+            left: 50%;
+            padding: 15px;
+            transform: translate(-50%, -50%);
+            background-color: #ff4444;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+            display: none;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+{% load static %}
+<body>
+    <div class="header">
+        <img src="{% static 'logo.png' %}" id="logo">
+    </div>
+
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="left">
+                <img src="{% static 'image.png' %}" alt="Voting box">
+            </div>
+            <div class="right">
+                <h1>REGISTER</h1> 
+                <p>Register with a valid ID and details.</p>
+
+                <form method="POST" action="{% url 'registration' %}">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <label for="first_name">Enter your Full name</label>
+                        <i class="fa fa-user"></i>
+                        <input type="text" name="first_name" id="first_name" placeholder="First Name" required>
+                        <input type="text" name="last_name" id="last_name" placeholder="Last Name" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">Enter your email address</label>
+                        <i class="fa fa-envelope"></i>
+                        <input type="email" name="email" id="email" placeholder="name@example.com" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="password1">Enter your password</label>
+                        <i class="fa fa-lock" ></i>
+                        <input type="password" name="password" id="password" placeholder="Password" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="voter_id">Enter Voter's ID</label>
+                        <i class="fa fa-id-card"></i>
+                        <input type="text" name="voter_id" id="voter_id" placeholder="1234567890" required>
+                    </div>
+
+                    <button class="register-btn" type="submit">Register</button>
+                </form>
+
+                {% if messages %}
+                    <div id="popup" class="popup">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+
+                    <script>
+                        window.addEventListener('DOMContentLoaded', function () {
+                            const popup = document.getElementById('popup');
+                            popup.style.display = 'block';
+                            setTimeout(() => {
+                                popup.style.display = 'none';
+                            }, 5000);
+                        });
+                    </script>
+                {% endif %}
+
+                <div id="LOGIN">Already have an account? <a href="{% url 'login' %}">LOGIN</a></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

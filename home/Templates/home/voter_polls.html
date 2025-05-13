@@ -1,0 +1,22 @@
+<!-- voter_polls.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voter Polls</title>
+</head>
+<body>
+    <h1>Available Elections</h1>
+    <ul>
+        {% for election in elections %}
+            <li>
+                {{ election.name }} -
+                <a href="{% url 'cast_vote' %}">Cast Vote</a>
+            </li>
+        {% empty %}
+            <li>No active elections available.</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'open_home' %}">🔙 Back to Dashboard</a>
+</body>
+</html>
