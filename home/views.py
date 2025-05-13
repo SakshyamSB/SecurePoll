@@ -10,10 +10,25 @@ from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpResponse
-from home.models import CustomUser
+from home.models import CustomUser, Election, Candidate, Vote
 from django.contrib.messages import get_messages
+from django.utils import timezone
+
+
 
 User = get_user_model()
+
+# @login_required
+# def update_info(request):
+#     if request.method == 'POST':
+#         user = request.user
+#         user.username = request.POST.get('username')
+#         user.email = request.POST.get('email')
+#         user.save()
+#         get_messages.success(request, 'Information updated successfully!')
+#         return redirect('my_info')  # or any page you want
+#     return render(request, 'edit_info.html')
+
 
 def open_login(request):
     if request.method == 'POST':
@@ -135,3 +150,53 @@ def open_home(request):
 #             messages.success(request, "Registration successful! You can now login.")
 
 #     return render(request, 'home/registration.html')
+
+
+def cast_vote(request):
+    elections = Election.objects.filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
+
+    if request.method == 'POST':
+        for election in elections:
+            candidate_id = request.POST.get(f"candidate_{election.id}")
+            if candidate_id:
+                candidate = Candidate.objects.get(id=candidate_id)
+                # Check if already voted
+                if not Vote.objects.filter(voter=request.user, election=election).exists():
+                    Vote.objects.create(
+                        voter=request.user,
+                        candidate=candidate,
+                        election=election
+                    )
+        messages.success(request, "Your vote has been submitted.")
+        return redirect('landing')
+
+    return render(request, 'home/vote.html', {'elections': elections})
+
+
+
+@login_required
+def submit_vote(request, election_id):
+    election = get_object_or_404(Election, pk=election_id)
+    if Vote.objects.filter(voter=request.user, election=election).exists():
+        messages.error(request, "You have already voted in this election.")
+        return redirect('cast_vote')
+
+    if request.method == 'POST':
+        candidate_id = request.POST.get('candidate_id')
+        candidate = get_object_or_404(Candidate, pk=candidate_id, election=election)
+
+        Vote.objects.create(
+            voter=request.user,
+            candidate=candidate,
+            election=election
+        )
+        messages.success(request, "Your vote has been cast successfully.")
+        return redirect('cast_vote')
+
+
+def election_results(request):
+    return render(request, 'election_results.html')
+
+# @login_required
+def my_info(request):
+    return render(request, 'my_info.html') 
