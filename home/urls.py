@@ -12,6 +12,7 @@ urlpatterns = [
     path('results/', views.election_results, name='election_results'),
     path('election-results/', views.election_results, name='election_results'),
     path('my-info/', views.my_info, name='my_info'),
+    path('logout/', views.user_logout, name='logout')
 
 
 ]
