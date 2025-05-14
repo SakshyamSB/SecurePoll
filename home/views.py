@@ -155,3 +155,5 @@ def submit_vote(request, election_id):
         messages.success(request, "Your vote has been cast successfully.")
         return redirect('cast_vote')
 
+        # changed
+
