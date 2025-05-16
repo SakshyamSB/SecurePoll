@@ -1,0 +1,161 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Cast Your Vote</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .header img {
+            width: 120px;
+        }
+
+        .container {
+            width: 1000px;
+            margin: 40px auto;
+            margin-top: 10px;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 26px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .election-card {
+            background-color: #e3f2fd;
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-left: 10px solid #1e88e5; /* Blue border on the left */
+            transition: transform 0.3s ease;
+        }
+
+        .election-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .election-card h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .election-card p {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .election-card label {
+            font-size: 16px;
+            margin-bottom: 12px;
+            display: block;
+            color: #333;
+        }
+
+        .election-card input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #1e88e5; /* Blue accent for radio buttons */
+        }
+
+        .election-card button {
+            padding: 12px 20px;
+            background-color: #1e88e5;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .election-card button:hover {
+            background-color: #1565c0;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #555;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #e04352;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Navbar inclusion -->
+    {% include 'navbar.html' %}
+
+    <div class="container">
+        <h1>CAST YOUR VOTE</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+        {% if elections %}
+            {% for election in elections %}
+                <div class="election-card">
+                    <h2>{{ election.name }}</h2>
+                    <p><strong>Description:</strong> {{ election.description }}</p>
+                    <p><strong>Start Date:</strong> {{ election.start_date|date:"F d, Y" }}</p>
+                    <p><strong>End Date:</strong> {{ election.end_date|date:"F d, Y" }}</p>
+
+                    {% if not election.has_voted %}
+                        <form id="vote_form" method="POST" action="{% url 'submit_vote' election.id %}">
+                            {% csrf_token %}
+                            <p><strong>Please select a candidate:</strong></p>
+                            {% for candidate in election.candidates.all %}
+                                <label>
+                                    <input type="radio" name="candidate_id" value="{{ candidate.id }}" required>
+                                    {{ candidate.full_name }} ({{ candidate.party_name }})
+                                </label><br>
+                            {% endfor %}
+                            <button type="submit">Vote</button>
+                        </form>
+                    {% else %}
+                        <p><strong>You have already voted in this election.</strong></p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No active elections right now.</p>
+        {% endif %}
+    </div>
+
+    <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+
+</body>
+</html>

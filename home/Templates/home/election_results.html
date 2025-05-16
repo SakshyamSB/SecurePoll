@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Election Results | SecurePoll</title>
+  {% load static %}
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .summary {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      padding: 24px;
+      margin-bottom: 40px;
+    }
+
+    .summary h2 {
+      margin-top: 0;
+      color: #111;
+    }
+
+    .summary-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .summary-item {
+      flex: 1 1 30%;
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .summary-item h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #111;
+    }
+
+    .summary-item p {
+      font-size: 16px;
+      margin-top: 6px;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .results-table th, .results-table td {
+      padding: 16px;
+      text-align: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    .results-table th {
+      background-color: #000;
+      color: white;
+    }
+
+    .winner-banner {
+      background-color: #d4edda;
+      border-left: 6px solid #28a745;
+      padding: 20px;
+      margin-bottom: 40px;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+
+    .chart-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+      margin-bottom: 40px;
+    }
+
+    .back-link {
+      text-align: center;
+      display: block;
+      margin: 40px auto;
+      font-weight: bold;
+      text-decoration: none;
+      color: #333;
+    }
+
+    .back-link:hover {
+      color: #e04352;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Include Navbar Component -->
+  {% include 'navbar.html' %}
+
+  <div class="container">
+
+    <!-- Summary -->
+    <div class="summary">
+      <h2>📋 Summary</h2>
+      <div class="summary-grid">
+        <div class="summary-item">
+          <h3>Total Voters</h3>
+          <p>10,000</p>
+        </div>
+        <div class="summary-item">
+          <h3>Votes Cast</h3>
+          <p>8,430</p>
+        </div>
+        <div class="summary-item">
+          <h3>Turnout</h3>
+          <p>84.3%</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Winner Highlight -->
+    <div class="winner-banner">
+      🏆 <strong>Winner:</strong> Anish Thapa (People’s Voice Party) — <strong>52.8%</strong> of the vote
+    </div>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="voteChart" height="150"></canvas>
+    </div>
+
+    <!-- Results Table -->
+    <table class="results-table">
+      <thead>
+        <tr>
+          <th>Candidate</th>
+          <th>Party</th>
+          <th>Total Votes</th>
+          <th>Vote %</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Anish Thapa</td>
+          <td>People’s Voice Party</td>
+          <td>4,450</td>
+          <td>52.8%</td>
+        </tr>
+        <tr>
+          <td>Mira Acharya</td>
+          <td>National Unity</td>
+          <td>2,700</td>
+          <td>32.0%</td>
+        </tr>
+        <tr>
+          <td>Sajan Lama</td>
+          <td>Green Future</td>
+          <td>1,280</td>
+          <td>15.2%</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Back Link -->
+    <a href="{% url 'landing' %}" class="back-link">← Back to Dashboard</a>
+
+  </div>
+
+  <script>
+    const ctx = document.getElementById('voteChart');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Anish Thapa', 'Mira Acharya', 'Sajan Lama'],
+        datasets: [{
+          label: 'Vote Share',
+          data: [4450, 2700, 1280],
+          backgroundColor: ['#28a745', '#007bff', '#ffc107'],
+          borderColor: ['#ffffff'],
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'bottom'
+          },
+          title: {
+            display: true,
+            text: 'Vote Share by Candidate'
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -22,7 +22,7 @@ class Election(models.Model):
     description = models.TextField(blank=True)
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    candidates = models.ManyToManyField('Candidate', related_name='elections')
+    candidates = models.ManyToManyField('Candidate', related_name='election')
 
     def __str__(self):
         return self.name
