@@ -83,3 +83,94 @@
 
 </body>
 </html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile</title>
+  <!-- {% load static %} -->
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 100px auto;
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 26px;
+      color: #222;
+    }
+
+    .profile-info {
+      font-size: 16px;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .profile-info strong {
+      display: inline-block;
+      width: 110px;
+      color: #555;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      color: #555;
+      font-size: 15px;
+      transition: color 0.3s ease;
+    }
+
+    .back-link:hover {
+      color: #e04352;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 60px 20px;
+        padding: 30px 20px;
+      }
+
+      .profile-info strong {
+        width: 100px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- {% include 'navbar.html' %} -->
+
+  <div class="container">
+    <h2>My Profile</h2>
+
+    <div class="profile-info">
+      <p><strong>Full Name:</strong> <!-- {{ user.full_name }} --> John Doe</p>
+      <p><strong>Username:</strong> <!-- {{ user.username }} --> johndoe123</p>
+      <p><strong>Email:</strong> <!-- {{ user.email }} --> john@example.com</p>
+      <p><strong>Address:</strong> <!-- {{ user.address }} --> 123 Main Street, Springfield</p>
+      <p><strong>Voter ID:</strong> <!-- {{ user.voter_id }} --> ABC123456</p>
+    </div>
+
+    <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+  </div>
+
+</body>
+</html>
