@@ -46,13 +46,10 @@
             padding: 25px;
             border-radius: 12px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            border-left: 10px solid #1e88e5; /* Blue border on the left */
+            border: 10px solid #1e88e5; /* Blue border on the left */
             transition: transform 0.3s ease;
         }
 
-        .election-card:hover {
-            transform: translateY(-5px);
-        }
 
         .election-card h2 {
             font-size: 24px;
@@ -109,6 +106,23 @@
             color: #e04352;
         }
 
+
+        .popup {
+            position: fixed;
+            width: 35.5%;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ff4444;
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+            font-size: 18px;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -116,14 +130,26 @@
     <!-- Navbar inclusion -->
     {% include 'navbar.html' %}
 
-    <div class="container">
-        <h1>CAST YOUR VOTE</h1>
-
-        {% if messages %}
+    {% if messages %}
+        <div id="popup" class="popup">
             {% for message in messages %}
                 <p>{{ message }}</p>
             {% endfor %}
-        {% endif %}
+        </div>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                const popup = document.getElementById('popup');
+                popup.style.display = 'block';
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                }, 5000);
+            });
+        </script>
+    {% endif %}
+
+    <div class="container">
+        <h1>CAST YOUR VOTE</h1>
 
         {% if elections %}
             {% for election in elections %}
@@ -134,13 +160,18 @@
                     <p><strong>End Date:</strong> {{ election.end_date|date:"F d, Y" }}</p>
 
                     {% if not election.has_voted %}
-                        <form id="vote_form" method="POST" action="{% url 'submit_vote' election.id %}">
+                        <form id="vote_form" method="POST" action="{% url 'submit_vote' election.id %}" onsubmit="return confirm('Are you sure you want to cast your vote?');">
                             {% csrf_token %}
                             <p><strong>Please select a candidate:</strong></p>
                             {% for candidate in election.candidates.all %}
-                                <label>
+                                <label style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
                                     <input type="radio" name="candidate_id" value="{{ candidate.id }}" required>
-                                    {{ candidate.full_name }} ({{ candidate.party_name }})
+                                    {% if candidate.profile_picture %}
+                                        <img src="{{ candidate.profile_picture.url }}" alt="{{ candidate.full_name }}" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'default_profile.png' %}" alt="No picture" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;">
+                                    {% endif %}
+                                    <span>{{ candidate.full_name }} ({{ candidate.party_name }})</span>
                                 </label><br>
                             {% endfor %}
                             <button type="submit">Vote</button>
@@ -156,6 +187,6 @@
     </div>
 
     <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
-
+    <br>
 </body>
 </html>

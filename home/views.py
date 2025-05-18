@@ -13,8 +13,8 @@ from django.http import HttpResponse
 from home.models import CustomUser, Election, Candidate, Vote
 from django.contrib.messages import get_messages
 from django.utils import timezone
-
-
+from django.db.models import Count
+from django.core.mail import EmailMultiAlternatives
 
 User = get_user_model()
 
@@ -108,12 +108,21 @@ def send_verification_email(user, request):
     link = f"http://{domain}/verify-email/{uid}/{token}/"
 
     subject = 'Verify your Email'
-    message = render_to_string('email/activation_email.html', {
+
+    # Render HTML content
+    html_message = render_to_string('email/activation_email.html', {
         'user': user,
         'verification_link': link
     })
 
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body='',  # Empty or use plain_message if available
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[user.email]
+    )
+    msg.attach_alternative(html_message, "text/html")
+    msg.send(fail_silently=False)
 
 @login_required
 def open_home(request):
@@ -168,8 +177,6 @@ def submit_vote(request, election_id):
         return redirect('cast_vote')
 
 
-def election_results(request):
-    return render(request, 'election_results.html')
 
 @login_required
 def my_info(request):
@@ -181,3 +188,38 @@ def user_logout(request):
     logout(request)  # Django's built-in logout function
     messages.success(request, "You have been logged out successfully.")
     return redirect('login')  # Redirect to login page after logging out
+
+
+
+@login_required
+def election_results(request):
+    finished_elections = Election.objects.filter(end_date__lt=timezone.now())
+    results = []
+
+    for election in finished_elections:
+        candidates_qs = election.candidates.annotate(vote_count=Count('vote')).order_by('-vote_count')
+        total_votes = sum(c.vote_count for c in candidates_qs)
+
+        total_candidates = candidates_qs.count()
+        turnout_percent = (total_votes / total_candidates) * 100 if total_candidates > 0 else 0
+
+        candidates = []
+        for c in candidates_qs:
+            vote_percent = (c.vote_count / total_votes) * 100 if total_votes > 0 else 0
+            candidates.append({
+                'full_name': c.full_name,
+                'party_name': c.party_name,
+                'vote_count': c.vote_count,
+                'vote_percent': round(vote_percent, 1),
+            })
+
+        results.append({
+            'election': election,
+            'candidates': candidates,
+            'total_votes': total_votes,
+            'total_candidates': total_candidates,
+            'turnout_percent': round(turnout_percent, 1),
+        })
+
+    return render(request, 'home/election_results.html', {'results': results})
+

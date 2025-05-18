@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.conf import settings
+from .notifications import notify_users_about_election
 
 class CustomUser(AbstractUser):
     voter_id = models.CharField(max_length=20, unique=True)  # Ensure voter_id is unique

@@ -1,0 +1,20 @@
+<h2>Hello,</h2>
+
+<h3>A new election has been created on SecurePoll!</h3>
+
+<ul>
+  <li><strong>Election Name:</strong> {{ election.name }}
+</li>
+<br>
+  <li><strong>Description:</strong> {{ election.description|default:"No description provided." }}
+</li>
+<br>
+  <li><strong>Start Date:</strong> {{ election.start_date }}
+</li>
+<br>
+  <li><strong>End Date:</strong> {{ election.end_date }}
+</li>
+</ul>
+<p>Please log in to your dashboard to vote for this election.</p>
+
+<p>Thanks,<br>SecurePoll Team</p>
