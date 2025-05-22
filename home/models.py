@@ -3,11 +3,19 @@ from django.db import models
 from django.conf import settings
 from .notifications import notify_users_about_election
 
+
 class CustomUser(AbstractUser):
-    voter_id = models.CharField(max_length=20, unique=True)  # Ensure voter_id is unique
-    
+    voter_id = models.CharField(max_length=20, unique=True)
+    date_of_birth = models.DateField(null=True, blank=True)
+    address = models.TextField(null=True, blank=True)
+    citizenship_id = models.CharField(max_length=20, unique=True,null=True)
+    mothers_name = models.CharField(max_length=20, null=True)
+    fathers_name = models.CharField(max_length=20, null=True)
+    kyc_verified = models.BooleanField(default=False)
+
     def __str__(self):
         return self.username
+
     
 class Candidate(models.Model):
     full_name = models.CharField(max_length=100)

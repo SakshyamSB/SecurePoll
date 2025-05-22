@@ -1,11 +1,20 @@
 from django.contrib import admin
 from .models import CustomUser, Candidate, Election, Vote
 from .notifications import notify_users_about_election
+from django.contrib.auth.admin import UserAdmin
 
 @admin.register(CustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ('username', 'voter_id', 'email', 'is_staff','is_active')
-    list_filter = ('is_active',)
+    list_display = ('username', 'email', 'voter_id', 'kyc_verified', 'is_active', 'is_staff')
+    list_filter = ('kyc_verified', 'is_staff', 'is_superuser')
+
+    fieldsets = UserAdmin.fieldsets + (
+        ('KYC Details', {
+            'fields': ('date_of_birth', 'address','citizenship_id','mothers_name','fathers_name', 'kyc_verified',),
+        }),
+    )
+
+    list_editable = ('kyc_verified',)  # Allow inline approval from the user list view
 
 @admin.register(Candidate)
 class CandidateAdmin(admin.ModelAdmin):

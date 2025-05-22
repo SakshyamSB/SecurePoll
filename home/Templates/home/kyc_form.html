@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>KYC Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 800px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 26px;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        form label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        form input[type="text"],
+        form input[type="date"],
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        form textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        form button {
+            padding: 12px 20px;
+            background-color: #1e88e5;
+            color: #fff;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        form button:hover {
+            background-color: #1565c0;
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #555;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #e04352;
+        }
+
+        .popup {
+            position: fixed;
+            width: 35.5%;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 2000;
+            display: none;
+            font-size: 18px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .popup.success { background-color: #4CAF50; }
+        .popup.error { background-color: #f44336; }
+        .popup.warning { background-color: #ff9800; }
+        .popup.info { background-color: #2196F3; }
+    </style>
+</head>
+<body>
+
+    {% include 'navbar.html' %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div id="popup" class="popup {{ message.tags }}">
+                <p>{{ message }}</p>
+            </div>
+            <script>
+                window.addEventListener('DOMContentLoaded', function () {
+                    const popup = document.getElementById('popup');
+                    popup.style.display = 'block';
+                    setTimeout(() => {
+                        popup.style.display = 'none';
+                    }, 5000);
+                });
+            </script>
+        {% endfor %}
+    {% endif %}
+
+    <div class="container">
+        <h1>Submit Your KYC</h1>
+        <form method="POST" action="{% url 'kyc_form' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth:</label>
+            {{ form.date_of_birth.errors }}
+            {{ form.date_of_birth }}
+
+            <label for="{{ form.address.id_for_label }}">Address:</label>
+            {{ form.address.errors }}
+            {{ form.address }}
+
+            <label for="{{ form.citizenship_id.id_for_label }}">Citizenship ID:</label>
+            {{ form.citizenship_id.errors }}
+            {{ form.citizenship_id }}
+
+            <label for="{{ form.mothers_name.id_for_label }}">Mother's Name:</label>
+            {{ form.mothers_name.errors }}
+            {{ form.mothers_name }}
+
+            <label for="{{ form.fathers_name.id_for_label }}">Father's Name:</label>
+            {{ form.fathers_name.errors }}
+            {{ form.fathers_name }}
+
+            <button type="submit">Submit KYC</button>
+        </form>
+
+    </div>
+
+    <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>
+    <br>
+
+</body>
+</html>

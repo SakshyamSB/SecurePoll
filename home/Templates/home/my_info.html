@@ -13,7 +13,7 @@
     }
 
     .container {
-      max-width: 500px;
+      max-width: 700px;
       margin: 100px auto;
       background: #fff;
       padding: 40px 30px;
@@ -77,6 +77,16 @@
       <p><strong>Full Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Voter ID:</strong> {{ user.voter_id }}</p>
+
+      <hr style="margin: 30px 0;">
+
+      <h3>KYC Details</h3>
+      <p><strong>Date of Birth:</strong> {{ user.date_of_birth|default:"Not Provided" }}</p>
+      <p><strong>Address:</strong> {{ user.address|default:"Not Provided" }}</p>
+      <p><strong>Citizenship ID:</strong> {{ user.citizenship_id|default:"Not Provided" }}</p>
+      <p><strong>Mother's Name:</strong> {{ user.mothers_name|default:"Not Provided" }}</p>
+      <p><strong>Father's Name:</strong> {{ user.fathers_name|default:"Not Provided" }}</p>
+      <p><strong>KYC Verified:</strong> {{ user.kyc_verified|yesno:"Yes,No" }}</p>
     </div>
 
     <a href="{% url 'landing' %}" class="back-link">← Back to Home</a>

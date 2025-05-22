@@ -15,20 +15,9 @@ from django.contrib.messages import get_messages
 from django.utils import timezone
 from django.db.models import Count
 from django.core.mail import EmailMultiAlternatives
-
+from .forms import KYCForm
 User = get_user_model()
 
-
-# @login_required
-# def update_info(request):
-#     if request.method == 'POST':
-#         user = request.user
-#         user.username = request.POST.get('username')
-#         user.email = request.POST.get('email')
-#         user.save()
-#         get_messages.success(request, 'Information updated successfully!')
-#         return redirect('my_info')  # or any page you want
-#     return render(request, 'edit_info.html')
 
 
 def open_login(request):
@@ -126,11 +115,9 @@ def send_verification_email(user, request):
 
 @login_required
 def open_home(request):
-    if request.method == 'POST':
-        logout(request)  
-        messages.success(request, "You have been logged out.")
-        return redirect('login')  
-
+    user = request.user
+    if not user.kyc_verified:
+        messages.info(request,"Fill Kyc form to Vote in Polls.")
     return render(request, 'home/landing.html')  
 
         
@@ -194,12 +181,12 @@ def user_logout(request):
 @login_required
 def election_results(request):
     finished_elections = Election.objects.filter(end_date__lt=timezone.now())
-    results = []
+    live_elections = Election.objects.filter(start_date__lte=timezone.now(), end_date__gte=timezone.now())
 
+    results = []
     for election in finished_elections:
         candidates_qs = election.candidates.annotate(vote_count=Count('vote')).order_by('-vote_count')
         total_votes = sum(c.vote_count for c in candidates_qs)
-
         total_candidates = candidates_qs.count()
         turnout_percent = (total_votes / total_candidates) * 100 if total_candidates > 0 else 0
 
@@ -221,5 +208,31 @@ def election_results(request):
             'turnout_percent': round(turnout_percent, 1),
         })
 
-    return render(request, 'home/election_results.html', {'results': results})
+    # Live elections with total votes counted per election
+    live_counts = []
+    for election in live_elections:
+        total_votes = election.candidates.annotate(vote_count=Count('vote')).aggregate(total=Count('vote'))['total'] or 0
+        live_counts.append({
+            'name': election.name,
+            'total_votes': total_votes,
+            'end_date': election.end_date,
+        })
 
+    return render(request, 'home/election_results.html', {
+        'results': results,
+        'live_counts': live_counts,
+    })
+
+@login_required
+def kyc_form(request):
+    if request.method == 'POST':
+        form = KYCForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'KYC form submitted successfully.')
+            return redirect('landing')  # or some other page
+    else:
+        # For GET requests, instantiate an empty form or with user's current data
+        form = KYCForm(instance=request.user)
+    
+    return render(request, 'home/kyc_form.html', {'form': form})

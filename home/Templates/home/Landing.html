@@ -69,6 +69,40 @@
     background-color: #e0e0e0;
     transform: scale(1.02);
   }
+
+  /* Popup styles */
+  .popup {
+    position: fixed;
+    width: 50.5%;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    display: none;
+    font-size: 18px;
+    text-align: center;
+    padding: 15px;
+  }
+
+  .popup.success {
+    background-color: #28a745; 
+  }
+
+  .popup.error, .popup.danger {
+    background-color: #dc3545; 
+  }
+
+  .popup.warning {
+    background-color: #ffc107; 
+    color: black;
+  }
+
+  .popup.info {
+    background-color: #17a2b8; 
+  }
 </style>
 
 </head>
@@ -82,10 +116,36 @@
       <img src="{% static 'National-Emblem-of-Nepal.jpg' %}" alt="Nepal Emblem" />
       <h1>Nepal Online E-voting</h1>
 
-      <a href="{% url 'cast_vote' %}" class="menu-button">Voter Polls</a>
+      {% if user.kyc_verified %}
+        <a href="{% url 'cast_vote' %}" class="menu-button">Voter Polls</a>
+      {% else %}
+        <span class="menu-button disabled" title="Verify your KYC to access polls">Voter Polls (KYC Required)</span>
+      {% endif %}
+
       <a href="{% url 'election_results' %}" class="menu-button">Election Results</a>
       <a href="{% url 'my_info' %}" class="menu-button">My Information</a>
+
+      <!-- New Fill KYC Form button -->
+      <a href="{% url 'kyc_form' %}" class="menu-button">Fill KYC Form</a>
     </div>
   </div>
+
+  {% if messages %}
+      {% for message in messages %}
+          <div id="popup" class="popup {{ message.tags }}">
+              <p>{{ message }}</p>
+          </div>
+      {% endfor %}
+
+      <script>
+          window.addEventListener('DOMContentLoaded', function () {
+              const popup = document.getElementById('popup');
+              if (popup) {
+                  popup.style.display = 'block';
+              }
+          });
+      </script>
+  {% endif %}
+
 </body>
 </html>
